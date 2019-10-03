@@ -61,8 +61,8 @@ class League_Factory:
 
     def write_results_to_handler(self, handler):
         #assume each team played one match per matchday,
-        # so any teams # of games played == number of matchdays
-        for i in range(1, len(self.league.teams[0].games)+1): #+1 since we're starting at 1, not 0
+        # so any teams number of games played == number of matchdays
+        for i in range(1, len(self.league.teams[0].games)+1): # +1 since we're starting at 1, not 0
             if i > 1:
                 handler.write(os.linesep) #spacer
             handler.write('Matchday ' + str(i) + os.linesep)
