@@ -1,15 +1,16 @@
 import sys
 import os
 import re
+import tempfile
+from pathlib import PurePath
 from src.League import League
 from src.Game import Game
 from src.Team import Team
-from pathlib import PurePath
 
 #this class handles accepting data from arguments/stdin, deliniating matchdays, and generating output.
 class League_Factory:
     def __init__(self):
-        self.output_name = 'output.txt' #default
+        self.output_name = None #None flag defaults to stdout
         self.league = League()
 
     def from_cmd(self, arguments):
@@ -46,18 +47,30 @@ class League_Factory:
 
 
     def write_results(self):
-        with open(self.output_name, 'w+') as file:
-            #assume each team played one match per matchday,
-            # so any teams # of games played == number of matchdays
-            for i in range(1, len(self.league.teams[0].games)+1): #+1 since we're starting at 1, not 0
-                if i > 1:
-                    file.write(os.linesep) #spacer
-                file.write('Matchday ' + str(i) + os.linesep)
-                points = self.league.generate_points(i)
-                for point_set in points[:3]:
-                    suffix = 'pt' if point_set[1] == 1 else 'pts'
-                    file.write('{}, {} {}'.format(point_set[0].name, point_set[1], suffix) + os.linesep)
-        print('Output written to:', self.output_name)
+        if self.output_name is not None:
+            #write to file
+            with open(self.output_name, 'w+') as file:
+                self.write_results_to_handler(file)
+            print('Output written to:', self.output_name)
+        else:
+            #write to stdout (tmpfile, then echo)
+            with tempfile.TemporaryFile('w+') as tmp:
+                self.write_results_to_handler(tmp)
+                tmp.seek(0)
+                print(tmp.read())
+
+    def write_results_to_handler(self, handler):
+        #assume each team played one match per matchday,
+        # so any teams # of games played == number of matchdays
+        for i in range(1, len(self.league.teams[0].games)+1): #+1 since we're starting at 1, not 0
+            if i > 1:
+                handler.write(os.linesep) #spacer
+            handler.write('Matchday ' + str(i) + os.linesep)
+            points = self.league.generate_points(i)
+            for point_set in points[:3]:
+                suffix = 'pt' if point_set[1] == 1 else 'pts'
+                handler.write('{}, {} {}'.format(point_set[0].name, point_set[1], suffix) + os.linesep)
+
 
     #throws an exception if path isn't valid, to prevent naive filesystem manipulation
     @staticmethod
