@@ -26,29 +26,30 @@ class League_Factory:
         #check for optional output location
         if len(arguments) > output_index and self.test_path(arguments[output_index], 'output'):
             self.output_name = arguments[output_index]
-
         self.unpack_input(file_handler)
 
     #unpacks file into league
     def unpack_input(self, file_handler):
         for line in file_handler:
-            matches = re.search(r'([a-zA-Z ]+) (\d), ([a-zA-Z ]+) (\d)', line)
-            if matches is None:
+            re_matches = re.search(r'([a-zA-Z ]+) (\d), ([a-zA-Z ]+) (\d)', line)
+            if re_matches is None:
                 raise Exception('Could not parse line: ' + line)
-            team1 = self.league.get_team_by_name(matches.group(1))
+            team1 = self.league.get_team_by_name(re_matches.group(1))
             if team1 is None:
-                team1 = Team(matches.group(1))
-            team2 = self.league.get_team_by_name(matches.group(3))
+                team1 = Team(re_matches.group(1))
+            team2 = self.league.get_team_by_name(re_matches.group(3))
             if team2 is None:
-                team2 = Team(matches.group(3))
-            score1 = matches.group(2)
-            score2 = matches.group(4)
+                team2 = Team(re_matches.group(3))
+            score1 = re_matches.group(2)
+            score2 = re_matches.group(4)
             self.league.add_game(Game(team1, score1, team2, score2))
 
 
     def write_results(self):
         with open(self.output_name, 'w+') as file:
-            for i in range(1, len(self.league.teams[0].games)+1): #+1 to correct 0 offset array
+            #assume each team played one match per matchday,
+            # so any teams # of games played == number of matchdays
+            for i in range(1, len(self.league.teams[0].games)+1): #+1 since we're starting at 1, not 0
                 if i > 1:
                     file.write(os.linesep) #spacer
                 file.write('Matchday ' + str(i) + os.linesep)
@@ -56,7 +57,7 @@ class League_Factory:
                 for point_set in points[:3]:
                     suffix = 'pt' if point_set[1] == 1 else 'pts'
                     file.write('{}, {} {}'.format(point_set[0].name, point_set[1], suffix) + os.linesep)
-
+        print('Output written to:', self.output_name)
 
     #throws an exception if path isn't valid, to prevent naive filesystem manipulation
     @staticmethod

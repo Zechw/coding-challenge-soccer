@@ -5,11 +5,7 @@ from src.League_Factory import League_Factory
 
 
 ## PROJECT TODOs:
-#    -? SQL backing?
-#  - OSX testing
-#  update Readme; instructions to test/run
-#  clean up any stray code?
-#  anything else we can test?
+#  STDOUT!
 #  submit!!
 
 

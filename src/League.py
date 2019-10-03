@@ -1,9 +1,9 @@
 class League:
     def __init__(self):
         self.teams = []
-        self.games = [] #TODO do we use this?
+        self.games = []
 
-    #adds game to Leage and Teams
+    #adds game to League and Teams
     def add_game(self, game):
         self.games.append(game)
         for team in game.teams:
