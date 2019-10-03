@@ -1,7 +1,6 @@
 import sys
 import os
-from pathlib import PurePath
-from src.Tournament import Tournament
+from src.League_Factory import League_Factory
 
 
 ## PROJECT TODOs:
@@ -14,5 +13,5 @@ from src.Tournament import Tournament
 
 
 arguments = sys.argv
-matchday_factory = Matchday_Factory()
-matchday_factory.from_cmd(arguments)
+league_factory = League_Factory()
+league_factory.from_cmd(arguments)
