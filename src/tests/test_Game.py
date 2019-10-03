@@ -1,5 +1,5 @@
-from Game import Game
-from Team import Team
+from src.Game import Game
+from src.Team import Team
 
 team1 = Team('First')
 team2 = Team('Second')

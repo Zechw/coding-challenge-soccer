@@ -1,6 +1,6 @@
-from League import League
-from Team import Team
-from Game import Game
+from src.League import League
+from src.Team import Team
+from src.Game import Game
 
 def test_teams_getting_set():
     league = League()
@@ -12,6 +12,15 @@ def test_teams_getting_set():
     assert league.teams.count(team1) == 1
     assert league.teams.count(team2) == 1
     assert league.teams.count(team3) == 1
+
+def test_get_team_by_name():
+    league = League()
+    team1 = Team('Santa Cruz Slugs')
+    team2 = Team('Aptos FC')
+    league.add_game(Game(team1, 10, team2, 0))
+    assert league.get_team_by_name('Santa Cruz Slugs') is team1
+    assert league.get_team_by_name('Aptos FC') is team2
+    assert league.get_team_by_name('missing') is None
 
 def test_add_game():
     league = League()
@@ -34,13 +43,13 @@ def test_sort_points_by_point():
 
 
 def test_sort_points_by_name():
-        team1 = Team('Santa Cruz Slugs')
-        team2 = Team('Aptos FC')
-        points = [(team1, 0),
-                  (team2, 0)]
-        League.sort_points(points)
-        assert points == [(team2, 0),
-                          (team1, 0)]
+    team1 = Team('Santa Cruz Slugs')
+    team2 = Team('Aptos FC')
+    points = [(team1, 0),
+              (team2, 0)]
+    League.sort_points(points)
+    assert points == [(team2, 0),
+                      (team1, 0)]
 
 def test_generate_points():
     league = League()
@@ -49,7 +58,7 @@ def test_generate_points():
     league.add_game(Game(team1, 10, team2, 0))
     league.add_game(Game(team1, 0, team2, 0))
     league.add_game(Game(team1, 1, team2, 1))
-    assert league.generate_points() == [
+    assert league.generate_points(3) == [
         (team1, 5),
         (team2, 2)
     ]

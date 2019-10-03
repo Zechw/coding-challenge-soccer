@@ -11,12 +11,18 @@ class League:
             if team not in self.teams:
                 self.teams.append(team)
 
+    def get_team_by_name(self, name):
+        for team in self.teams:
+            if team.name == name:
+                return team
+        return None
+
     #returns list of tuples [(team, points), ...]
     # sorted by points DESC, name ASC
-    def generate_points(self):
+    def generate_points(self, matchdays_to_count):
         points = []
         for team in self.teams:
-            points.append( (team, team.get_points()) )
+            points.append( (team, team.get_points(matchdays_to_count)) )
         self.sort_points(points)
         return points
 
