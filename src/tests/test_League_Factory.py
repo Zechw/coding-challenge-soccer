@@ -20,7 +20,6 @@ def test_unpack_input_invalid_exception():
         lf.unpack_input('BADINPUT')
 
 def test_unpack_input_proper_lengths():
-    #team, matchday, games
     lf = League_Factory()
     with tempfile.TemporaryFile('w+') as tmp:
         tmp.write(
@@ -42,3 +41,13 @@ Santa Cruz Slugs 1, Felton Lumberjacks 1""")
         assert len(lf.league.games) == 12
         for team in lf.league.teams:
             assert len(team.games) == 4
+
+def test_end_to_end__sample_to_expected():
+    lf = League_Factory()
+    with open('sample-input.txt', 'r') as input_handle:
+        lf.unpack_input(input_handle)
+        with tempfile.TemporaryFile('w+') as tmp_handler:
+            lf.write_results_to_handler(tmp_handler)
+            tmp_handler.seek(0)
+            with open('expected-output.txt') as expected_handler:
+                assert expected_handler.read() == tmp_handler.read()
